@@ -35,6 +35,7 @@ pub fn compress_video(input: &Path, output: &Path) {
 
     Command::new("ffmpeg")
         .args([
+            "-y", // Overwrite output files without asking
             "-i",
             input.to_str().unwrap_or_default(),
             "-c:v",
