@@ -3,3 +3,10 @@ services:
     image: ghcr.io/excoffierleonard/tools:latest
     build:
       context: .
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
