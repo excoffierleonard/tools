@@ -1,4 +1,8 @@
-use std::{path::Path, process::Command, sync::OnceLock};
+use std::{
+    path::Path,
+    process::{Command, Stdio},
+    sync::OnceLock,
+};
 
 static USE_NVENC: OnceLock<bool> = OnceLock::new();
 
@@ -38,6 +42,8 @@ pub fn compress_video(input: &Path, output: &Path) {
             codec,
             output.to_str().unwrap_or_default(),
         ])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()
         .unwrap();
 }
