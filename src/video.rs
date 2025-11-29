@@ -33,6 +33,7 @@ mod tests {
     use super::*;
     use std::fs;
 
+    #[ignore = "Requires ffmpeg with nvenc support and a compatible GPU"]
     #[test]
     fn compressing_video_does_work() {
         let input_bytes = fs::read("tests/inputs/water-uhd_3840_2160_25fps.mp4").unwrap();
