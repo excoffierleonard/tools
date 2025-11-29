@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 image = "0.25.9"
 oxipng = "9.1.5"
+thiserror = "2.0.17"
