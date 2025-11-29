@@ -7,7 +7,7 @@ use tempfile::{Builder, NamedTempFile};
 
 use crate::error::Error;
 
-pub fn compress_video(input_bytes: &[u8]) -> Result<Vec<u8>, Error> {
+pub fn compress_video_lossy_to_mp4(input_bytes: &[u8]) -> Result<Vec<u8>, Error> {
     let input_file = NamedTempFile::new()?;
     let output_file = Builder::new().suffix(".mp4").tempfile()?;
 
@@ -37,7 +37,7 @@ mod tests {
     #[test]
     fn compressing_video_does_work() {
         let input_bytes = fs::read(Path::new("tests").join("inputs").join("water.mp4")).unwrap();
-        let compressed_data = compress_video(&input_bytes).unwrap();
+        let compressed_data = compress_video_lossy_to_mp4(&input_bytes).unwrap();
         fs::write(
             Path::new("tests")
                 .join("outputs")
