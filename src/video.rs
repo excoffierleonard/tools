@@ -3,13 +3,13 @@ use std::{
     process::{Command, Stdio},
 };
 
-use tempfile::NamedTempFile;
+use tempfile::{Builder, NamedTempFile};
 
 use crate::error::Error;
 
 pub fn compress_video(input_bytes: &[u8]) -> Result<Vec<u8>, Error> {
     let input_file = NamedTempFile::new()?;
-    let output_file = NamedTempFile::new()?;
+    let output_file = Builder::new().suffix(".mp4").tempfile()?;
 
     fs::write(input_file.path(), input_bytes)?;
 
