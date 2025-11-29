@@ -51,7 +51,6 @@ pub fn compress_video(input: &Path, output: &Path) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
 
     #[test]
     fn compressing_video_does_work() {
@@ -64,9 +63,6 @@ mod tests {
             output.metadata().unwrap().len() > 0,
             "Output file is empty or corrupted"
         );
-
-        // Clean up
-        fs::remove_file(output).unwrap();
     }
 
     #[test]
