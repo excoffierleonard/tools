@@ -31,15 +31,22 @@ pub fn compress_video(input_bytes: &[u8]) -> Result<Vec<u8>, Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
+    use std::{fs, path::Path};
 
     #[ignore = "Requires ffmpeg with nvenc support and a compatible GPU"]
     #[test]
     fn compressing_video_does_work() {
-        let input_bytes = fs::read("tests/inputs/water-uhd_3840_2160_25fps.mp4").unwrap();
+        let input_bytes = fs::read(Path::new("tests").join("inputs").join("water.mp4")).unwrap();
         let compressed_data = compress_video(&input_bytes).unwrap();
-        fs::write("tests/outputs/output.mp4", &compressed_data).unwrap();
+        fs::write(
+            Path::new("tests")
+                .join("outputs")
+                .join("water_compressed.mp4"),
+            &compressed_data,
+        )
+        .unwrap();
 
         assert!(!compressed_data.is_empty(), "Output is empty or corrupted");
+        assert!(compressed_data.len() < input_bytes.len());
     }
 }

@@ -38,24 +38,38 @@ pub fn compress_image_lossless_to_png(input_bytes: &[u8]) -> Result<Vec<u8>, Err
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
+    use std::{fs, path::Path};
 
     #[test]
     fn test_lossy_image_compression() {
-        let input_bytes = fs::read("tests/inputs/lenna.png").unwrap();
+        let input_bytes = fs::read(Path::new("tests").join("inputs").join("lenna.png")).unwrap();
         let compressed_data = compress_image_lossy_to_jpeg(&input_bytes).unwrap();
-        fs::write("tests/outputs/lenna_compressed.jpeg", &compressed_data).unwrap();
+        fs::write(
+            Path::new("tests")
+                .join("outputs")
+                .join("lenna_compressed.jpeg"),
+            &compressed_data,
+        )
+        .unwrap();
 
+        assert!(!compressed_data.is_empty(), "Output is empty or corrupted");
         assert!(compressed_data.len() < input_bytes.len());
     }
 
     #[ignore = "This test is very slow due to lossless compression"]
     #[test]
     fn test_lossless_image_compression() {
-        let input_bytes = fs::read("tests/inputs/lenna.png").unwrap();
+        let input_bytes = fs::read(Path::new("tests").join("inputs").join("lenna.png")).unwrap();
         let compressed_data = compress_image_lossless_to_png(&input_bytes).unwrap();
-        fs::write("tests/outputs/lenna_compressed.png", &compressed_data).unwrap();
+        fs::write(
+            Path::new("tests")
+                .join("outputs")
+                .join("lenna_compressed.png"),
+            &compressed_data,
+        )
+        .unwrap();
 
+        assert!(!compressed_data.is_empty(), "Output is empty or corrupted");
         assert!(compressed_data.len() < input_bytes.len());
     }
 }
