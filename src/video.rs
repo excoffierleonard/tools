@@ -39,11 +39,9 @@ pub fn convert_video_to_gif(input_bytes: &[u8]) -> Result<Vec<u8>, Error> {
         .arg("-i")
         .arg(input_file.path())
         .arg("-filter_complex")
-        .arg("[0:v] split [a][b]; [a] palettegen [pal]; [b][pal] paletteuse")
+        .arg("[0:v] fps=15,scale=480:-1:flags=lanczos,split [a][b]; [a] palettegen [pal]; [b][pal] paletteuse")
         .arg(output_file.path())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()?;
+        .output()?;
 
     Ok(fs::read(output_file.path())?)
 }
