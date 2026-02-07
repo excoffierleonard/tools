@@ -1,7 +1,7 @@
-use std::{io::Cursor, num::NonZeroU8};
+use std::{io::Cursor, num::NonZeroU64};
 
 use image::{ImageFormat, ImageReader, codecs::jpeg::JpegEncoder};
-use oxipng::{Deflaters, Options, optimize_from_memory};
+use oxipng::{Deflater, Options, ZopfliOptions, optimize_from_memory};
 
 use crate::error::Error;
 
@@ -28,9 +28,10 @@ pub fn compress_image_lossless_to_png(input_bytes: &[u8]) -> Result<Vec<u8>, Err
 
     // Then optimize with oxipng
     let mut options = Options::max_compression();
-    options.deflate = Deflaters::Zopfli {
-        iterations: NonZeroU8::new(255).unwrap(),
-    };
+    options.deflater = Deflater::Zopfli(ZopfliOptions {
+        iteration_count: NonZeroU64::new(255).unwrap(),
+        ..Default::default()
+    });
     let optimized = optimize_from_memory(&buffer, &options)?;
     Ok(optimized)
 }

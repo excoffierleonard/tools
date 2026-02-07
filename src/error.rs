@@ -3,11 +3,14 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("Image processing error: {0}")]
-    ImageError(#[from] image::ImageError),
+    Image(#[from] image::ImageError),
 
     #[error("IO error: {0}")]
-    IoError(#[from] std::io::Error),
+    Io(#[from] std::io::Error),
+
+    #[error("FFmpeg error: {0}")]
+    Ffmpeg(String),
 
     #[error("Oxipng error: {0}")]
-    OxipngError(#[from] oxipng::PngError),
+    Oxipng(#[from] oxipng::PngError),
 }

@@ -2,7 +2,6 @@
 # Stage 1: Prepare the Recipe
 ##############################
 FROM rust:alpine AS chef
-RUN apk add --no-cache musl-dev
 RUN cargo install cargo-chef
 WORKDIR /app
 COPY . .
@@ -12,7 +11,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 # Stage 2: Cache Dependencies
 ##############################
 FROM rust:alpine AS builder
-RUN apk add --no-cache musl-dev
+RUN apk add --no-cache
 RUN cargo install cargo-chef
 WORKDIR /app
 COPY --from=chef /app/recipe.json .
