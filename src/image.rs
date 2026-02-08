@@ -36,6 +36,10 @@ pub fn compress_image_lossless_to_png(input_bytes: &[u8]) -> Result<Vec<u8>, Err
     Ok(optimized)
 }
 
+pub fn upscale_image(_input_bytes: &[u8]) -> Result<Vec<u8>, Error> {
+    todo!()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -72,5 +76,20 @@ mod tests {
 
         assert!(!compressed_data.is_empty(), "Output is empty or corrupted");
         assert!(compressed_data.len() < input_bytes.len());
+    }
+
+    #[test]
+    fn test_image_upscale() {
+        let input_bytes = fs::read(Path::new("tests").join("inputs").join("lenna.png")).unwrap();
+        let upscaled_data = upscale_image(&input_bytes).unwrap();
+        fs::write(
+            Path::new("tests")
+                .join("outputs")
+                .join("lenna_upscaled.png"),
+            &upscaled_data,
+        )
+        .unwrap();
+
+        assert!(!upscaled_data.is_empty(), "Output is empty or corrupted");
     }
 }
