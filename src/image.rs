@@ -78,33 +78,24 @@ pub fn upscale_image(input_bytes: &[u8], api_key: &str) -> Result<Vec<u8>, Error
         .json(&body)
         .send()?;
     let value: Value = response.error_for_status()?.json()?;
-    let image_data = extract_inline_image_data(&value, "<non-text response>")?;
-    let decoded = STANDARD.decode(image_data)?;
-    Ok(decoded)
-}
-
-fn extract_inline_image_data<'a>(value: &'a Value, raw_text: &str) -> Result<&'a str, Error> {
-    let candidates = value
+    let image_data = value
         .get("candidates")
         .and_then(Value::as_array)
-        .ok_or_else(|| Error::Api(format!("missing candidates in response: {}", raw_text)))?;
-    let content = candidates.first()
+        .and_then(|candidates| candidates.first())
         .and_then(|candidate| candidate.get("content"))
-        .ok_or_else(|| Error::Api(format!("missing content in response: {}", raw_text)))?;
-    let parts = content
-        .get("parts")
+        .and_then(|content| content.get("parts"))
         .and_then(Value::as_array)
-        .ok_or_else(|| Error::Api(format!("missing parts in response: {}", raw_text)))?;
-    let data = parts
-        .iter()
-        .find_map(|part| {
-            part.get("inline_data")
-                .or_else(|| part.get("inlineData"))
-                .and_then(|inline| inline.get("data"))
-                .and_then(|d| d.as_str())
+        .and_then(|parts| {
+            parts.iter().find_map(|part| {
+                part.get("inlineData")
+                    .or_else(|| part.get("inline_data"))
+                    .and_then(|inline| inline.get("data"))
+                    .and_then(Value::as_str)
+            })
         })
-        .ok_or_else(|| Error::Api(format!("no inline image data in response: {}", raw_text)))?;
-    Ok(data)
+        .ok_or_else(|| Error::Api("no inline image data in response".to_string()))?;
+    let decoded = STANDARD.decode(image_data)?;
+    Ok(decoded)
 }
 
 #[cfg(test)]
